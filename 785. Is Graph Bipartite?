@@ -1,0 +1,39 @@
+// It is like Colouring the whole graph into two colours meanwhile any two adjacent nodes should not be of same colour.
+// If possible return true, else return false.
+
+class Solution {
+public:
+    bool isBipartite(vector<vector<int>>& graph) {
+
+        int colour[graph.size()];
+        memset(colour,-1,sizeof(colour));
+        // this was for initializing the array of given size with -1 as each element.
+        
+        // Now start BFS from each node if not coloured.
+        // As graph may not be connected.
+        
+        for(int i=0; i<graph.size(); i++){
+        
+            if(colour[i]==-1){
+                colour[i]=0;
+                queue<int>q;
+                q.push(i);
+                
+                while(!q.empty()){
+                    int ind=q.front();
+                    q.pop();
+                    for(auto it: graph[ind]){
+                        if(colour[it]==-1){
+                            colour[it]=!colour[ind];
+                            q.push(it);
+                        }
+                        else if(colour[it]==colour[ind]){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+};
