@@ -1,0 +1,57 @@
+// Using DFS and then updating the answer
+// Intuition
+// Using DFS.
+
+// Approach
+// calling dfs and upadatinhg the answer if returned, else -1 but not updating the answer.
+
+// Complexity
+// Time complexity:
+// O(N*q) while q is the size of querry array.
+
+// Space complexity:
+// O(N**2) for creating adjacency list and visited array O(N)
+
+
+
+class Solution {
+public:
+
+    double dfs(unordered_map<string, vector<pair<string, double>>> &adj, string &q, string &find, unordered_map<string, bool> &vis){
+        vis[q] = true;
+        for(auto x:adj[q]){
+            if(x.first == find) return x.second;
+            if(!vis[x.first]){
+                double res = dfs(adj, x.first, find, vis);
+                if(res!=-1){
+                    return res*x.second;
+                }
+            }
+        }
+        return -1;
+    }
+
+    vector<double> calcEquation(vector<vector<string>>& eq, vector<double>& values, vector<vector<string>>& que) {
+
+        unordered_map<string, vector<pair<string, double>>>adj;
+
+        for(int i=0; i<eq.size(); i++){
+            adj[eq[i][0]].push_back ({eq[i][1], values[i]});
+            adj[eq[i][1]].push_back({eq[i][0], 1/values[i]});
+        }
+
+        vector<double> ans(que.size(), -1);
+
+        for(int i=0; i<que.size(); i++){
+            string q = que[i][0];
+            string find = que[i][1];
+
+            unordered_map<string, bool> vis;    
+
+            ans[i] = dfs(adj, q, find, vis);
+        }
+
+        return ans;
+
+    }
+};
