@@ -1,0 +1,119 @@
+// Medium
+
+
+
+class Solution {
+public:
+
+
+    // To check if index is valid or not.
+
+    bool isValid(int i, int j, int n){
+        return (i>=0 && i<n && j>=0 && j<n);
+    }
+
+    // DFS for making first Island to two.
+
+    void dfs(vector<vector<int>>& grid, int i, int j, int n){
+        grid[i][j] = 2;
+        vector <int> row = {1, -1, 0, 0};
+        vector <int> col = {0, 0, -1, 1};
+
+        for(int a=0; a<4; a++){
+            int newrow = i+row[a];
+            int newcol = j+col[a];
+            if(isValid(newrow, newcol, n)){
+                if(grid[newrow][newcol]==1){
+                    dfs(grid, newrow, newcol, n);
+                }
+            }
+        }
+        return;
+    }
+
+    int shortestBridge(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int flag = 0;
+
+        // First Make all the 1's of first Island to be 2.
+
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                if(grid[i][j]){
+                    dfs(grid, i, j, n);
+                    flag++;
+                    break;
+                }
+            }
+            if(flag){
+                break;
+            }
+        }
+
+
+        //  Put all the Cordinates of all 2's in queue.
+        //  Start distance with 0.
+
+        queue <pair<int, int>> bfs;
+        int dist = 0;
+        for(int i=0; i<n; i++){
+
+            for(int j=0; j<n; j++){
+                if(grid[i][j]==2){
+                    bfs.push({i,j});
+                }
+            }
+
+        }
+
+        // Make a new queue to store all the ext level cordinates.
+
+        queue <pair<int, int>> newbfs;
+        
+        // Loop running untill we find that 1 of anther Island
+
+        while(true){
+
+            // This is doing BFS on the inserted nodes
+
+            while(!bfs.empty()){
+                int i = bfs.front().first;
+                int j = bfs.front().second;
+                bfs.pop();
+                vector <int> row = {1, -1, 0, 0};
+                vector <int> col = {0, 0, -1, 1};
+
+                // Checking all the cases valid.
+
+                for(int a=0; a<4; a++){
+                    int newrow = i+row[a];
+                    int newcol = j+col[a];
+                    if(isValid(newrow, newcol, n)){
+
+                        // If found the 1 of new Island then returning the distance
+
+                        if(grid[newrow][newcol]==1){
+                            return dist;
+                        }
+
+                        // If found the water '0' then marking it -1 for visited and then pushing in newbfs
+
+                        if(grid[newrow][newcol]==0){
+                            grid[newrow][newcol] = -1;
+                            newbfs.push({newrow, newcol});
+                        }
+                    }
+                }
+
+            }
+
+            // If not found new Island then moving to the next level by changing the queue and increamenting the distance.
+
+            bfs = newbfs;
+            dist++;
+        }
+
+        // In case there is no gaurantee of two Islands then we had to return something out of this loop also.
+
+    }
+};
