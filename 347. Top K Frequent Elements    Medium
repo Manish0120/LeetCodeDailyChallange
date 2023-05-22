@@ -1,0 +1,64 @@
+// Bucket Sort, Priorityy queue, unordered_map, hashing
+
+
+// Solution 1:
+// O(N) , O(N)
+
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        // could be solved in many ways
+        // a minheap solution - O(nlogk), space O(k)
+        // a bucket sort solution . O(n), space O(n)
+        // this is the bucket sort solution
+        
+        unordered_map<int, int> num_freq;
+        vector<vector<int>> bucket(nums.size());
+        vector<int> answer;
+        
+		// number --> frequency
+        for(auto n: nums) 
+            num_freq[n]++;//maps are initalized with 0, no need to worry about the init value
+        
+		// frequency --> numbers
+        for(auto k: num_freq)
+            bucket[k.second-1].push_back(k.first);
+       
+	   //accumulate the numbers in the bucket, start from the bucket end which has the most frequent numbers
+        for(int i = bucket.size()-1; i>=0; i--){
+            if(answer.size() ==k)
+                return answer;
+            for(int n:bucket[i])
+                answer.push_back(n);
+        }
+        return answer;
+    }
+    
+   
+// Solution 2:
+// O(NlogN), O(N)
+
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        
+        int n=nums.size();
+        unordered_map<int,int>mp;
+        vector<int> Res;
+       
+        
+        for(int i=0;i<n;i++)
+        {
+            mp[nums[i]]++;
+        }
+        
+        priority_queue<pair<int,int>> m;
+        for( auto i : mp)
+        {
+            m.push(make_pair( i.second, i.first));
+        }
+        
+        for( int i =0;i<k ; i++)
+        {
+            Res.push_back( m.top().second);
+            m.pop();
+        }
+      
+        return Res;
+    }
